@@ -1,22 +1,14 @@
 """
 Scheme Dashboard Tracker
--------------------------
-A Streamlit dashboard to track SIP scheme performance across Partners/RMs,
-with filters for Cluster, Branch and RM Name, KPI cards for qualified slabs,
-and a detail table for the selected RM(s).
-
-Run locally:
-    pip install streamlit pandas plotly gspread google-auth
-    streamlit run scheme_dashboard.py
 """
 
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# =========================================================
+
 # PAGE CONFIG
-# =========================================================
+
 st.set_page_config(
     page_title="Scheme Dashboard Tracker",
     page_icon="📊",
@@ -38,9 +30,9 @@ NUMERIC_COLS = [
     "Actual ₹ Debited So Far", "Slab #", "Gap",
 ]
 
-# =========================================================
+
 # DATA LOADING
-# =========================================================
+
 # OPTION A (simplest): Publish the Google Sheet to the web as CSV
 #   File > Share > Publish to web > select the sheet/tab > CSV
 #   Paste that link below as SHEET_CSV_URL.
@@ -93,9 +85,9 @@ def load_data(csv_url: str) -> pd.DataFrame:
 #     return pd.DataFrame(records)
 
 
-# =========================================================
+
 # LOAD DATA
-# =========================================================
+
 st.title("📊 Scheme Dashboard Tracker")
 
 if not SHEET_CSV_URL:
@@ -119,9 +111,9 @@ if missing_cols:
 
 df = raw_df.copy()
 
-# =========================================================
+
 # SIDEBAR FILTERS (cascading: Cluster -> Branch -> RM)
-# =========================================================
+
 st.sidebar.header("🔍 Filters")
 
 def multiselect_filter(label, col, frame):
@@ -143,9 +135,9 @@ if st.sidebar.button("🔄 Reset filters"):
 
 st.sidebar.caption(f"Showing **{len(filtered_df):,}** of **{len(df):,}** partner rows")
 
-# =========================================================
+
 # KPI CARDS
-# =========================================================
+
 def qualified_count(frame, col):
     if col not in frame.columns:
         return 0
@@ -166,9 +158,9 @@ k4.metric("Debit Confirmation Rate", f"{conversion_rate:.1f}%")
 
 st.divider()
 
-# =========================================================
+
 # INSIGHTS — charts
-# =========================================================
+
 st.subheader("📈 Insights")
 
 c1, c2 = st.columns(2)
@@ -238,9 +230,9 @@ if {"Branch Name", "Slab", "Slab (debit-confirmed)"}.issubset(filtered_df.column
 
 st.divider()
 
-# =========================================================
+
 # DETAIL TABLE — selected RM(s)
-# =========================================================
+
 st.subheader("📋 Partner-Level Detail")
 
 if sel_rm:
