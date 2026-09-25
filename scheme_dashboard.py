@@ -41,7 +41,18 @@ NUMERIC_COLS = [
 #   account. See the commented `load_via_gspread()` function below and
 #   store credentials in st.secrets["gcp_service_account"].
 
-SHEET_CSV_URL = st.secrets.get("SHEET_CSV_URL", "") if hasattr(st, "secrets") else ""
+# Default: your "Main-All" sheet, exported live as CSV (gid=0).
+# This only works if the sheet is shared as "Anyone with the link - Viewer".
+# You can override it via .streamlit/secrets.toml -> SHEET_CSV_URL = "..."
+DEFAULT_SHEET_CSV_URL = (
+    "https://docs.google.com/spreadsheets/d/"
+    "1ItTGuSy6bN5zNzAnoEQqsjevHFRfV3AQ05CzwfKCIXA/export?format=csv&gid=0"
+)
+SHEET_CSV_URL = (
+    st.secrets.get("SHEET_CSV_URL", DEFAULT_SHEET_CSV_URL)
+    if hasattr(st, "secrets")
+    else DEFAULT_SHEET_CSV_URL
+)
 
 
 @st.cache_data(ttl=300, show_spinner="Fetching latest scheme data...")
